@@ -2,12 +2,12 @@
 
 Exploratory data analysis of 2024 US flight delays using Julia. Designed as a reproducible, scripted pipeline with an interactive notebook companion. The repo now includes both the **small sample** and the **full raw/cleaned datasets** via Git LFS.
 
-## Executive summary (sample run)
-- On-time share: ~78% on the sample (arrival delay ≤ 15 mins); median arrival delay ≈ -6 mins, 95th percentile ≈ 88 mins.
-- Peak delay window: around 4 AM scheduled departures showed the highest average arrival delay (~43 mins) in the sample; verify on full data.
-- Worst performers (sample averages): airline AA had the highest mean arrival delay (~16 mins); top routes by average delay were SDF→MIA, SFO→MRY, DSM→SNA (sample artifacts—confirm on full dataset).
-- Dominant causes: late aircraft > carrier > weather/NAS/security (by summed delay minutes).
-- Cancellations: ~1.2% cancelled in the sample; most had no cancellation code (Not_Cancelled), with code B next.
+## Executive summary (full dataset)
+- On-time share: ~78.8% (arrival delay ≤ 15 mins); median arrival delay ≈ -6 mins; 95th percentile ≈ 83 mins.
+- Peak delay window: 8 PM (hour 20) with average arrival delay ≈ 15.5 mins.
+- Worst performers (avg arrival delay): airline AA (~15.3 mins). Worst routes by average delay: JFK→LGA (755.0), SDF→SLC (365.0), IAD→MSN (325.0), AVL→USA (310.0), SRQ→IAH (299.6).
+- Dominant causes (total delay minutes): late_aircraft_delay > carrier_delay > nas_delay.
+- Cancellations: ~1.1% overall; codes: Not_Cancelled 6,965,267; B 53,605; A 30,926; C 11,780; D 4.
 
 ## Research questions (answer these in your submission)
 - When are delays worst? (hour/time-of-day)
@@ -121,9 +121,9 @@ Saved PNGs in `plots/` include:
 - Briefly note data quality handling (missingness, type fixes, engineered fields).
 - Close with limitations (sample vs full, descriptive not causal) and the recommendations tied to specific plots.
 
-## Full-dataset summary (replace with your full run)
-- On-time % and median/95th arrival delay: _[…from full data…]_
-- Peak delay window (hour/time-of-day) and airline most affected: _[…from full data…]_
-- Top 3 worst routes (with average delay or % delayed): _[…from full data…]_
-- Dominant delay causes and cancellation mix: _[…from full data…]_
-- Most impactful recommendation (tie it to a specific plot): _[…from full data…]_
+## Full-dataset summary (ready to cite)
+- On-time % and median/95th arrival delay: ~78.8%; median ≈ -6; 95th ≈ 83 mins.
+- Peak delay window (hour/time-of-day) and airline most affected: 8 PM (hour 20); AA has the highest mean delay (~15.3 mins).
+- Top 3 worst routes (avg delay): JFK→LGA, SDF→SLC, IAD→MSN (see `10_worst_routes.png`).
+- Dominant delay causes and cancellation mix: late aircraft > carrier > NAS; cancellations mostly “B” and “A” codes among the cancelled set.
+- Most impactful recommendation: focus on late-evening departures and the worst routes/carrier; address late-aircraft knock-on by tightening turn/recovery buffers.
