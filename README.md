@@ -1,70 +1,98 @@
 # Flight Delay EDA (Julia)
 
-This project performs an end-to-end exploratory data analysis (EDA) of the 2024 US Flight Dataset (≈7M rows) using the Julia programming language.
+Exploratory data analysis of 2024 US flight delays using Julia. Designed as a reproducible, scripted pipeline with an interactive notebook companion. This version ships with a **small sample** of the data for quick grading/runs; the full raw/cleaned datasets (>1 GB) are intentionally excluded from Git history.
 
-## Features
-- High-performance loading of large CSVs using `CSV.jl`
-- Full data cleaning pipeline
-- Robust feature engineering (hour_of_day, time_of_day, is_delayed, etc.)
-- Univariate, bivariate, and multivariate visualizations
-- Automated plot saving
-- Reproducible scripts
-- Companion Julia notebook for interactive EDA
-- Data dictionary (`data/flight_data_2024_data_dictionary.csv`) for quick schema reference
+## Executive summary (fill in from your run)
+- On-time vs delayed share and typical delay range.
+- When delays are worst (hour-of-day, time-of-day buckets) and which airlines/routes are most impacted.
+- Dominant delay drivers (e.g., late aircraft vs weather vs NAS) and cancellation patterns.
+- Worst routes and a correlation heatmap to spot co-movement between delay types.
 
-## Project Structure
+## Methodology & checks
+- Phase 1: load + basic profiling (shape, head/tail, describe).
+- Phase 2: cleaning + features: drop rows missing both dep/arr delay unless cancelled; fill delay reason NAs with 0; fill cancellation codes with `Not_Cancelled`; parse dates; derive `hour_of_day`, `time_of_day`, `is_delayed`, `route`, `is_weekend`.
+- Phase 3: plot generation (PNG to `plots/`), using headless PyPlot for reliability.
+- Data dictionary: `data/flight_data_2024_data_dictionary.csv` holds column definitions—reference it when interpreting plots.
 
-flight-eda-julia/
-│
-├── README.md
-├── data/
-│   └── flight_data_2024.csv
-├── scripts/
-│   ├── phase1_load_inspect.jl
-│   ├── phase2_clean_engineer.jl
-│   └── phase3_eda_plots.jl
-└── plots/
+## Highlights
+- Three-phase pipeline: load/inspect → clean/engineer → plot/interpret
+- Fast CSV loading + feature engineering (`hour_of_day`, `time_of_day`, `is_delayed`, `route`, etc.)
+- Saved visuals (PNG) for quick review in `plots/`
+- Notebook that mirrors the pipeline for interactive exploration
+- Data dictionary for column definitions
 
-## Run Order
+## Reproducibility checklist
+1) `./julia-1.10.5/bin/julia --project=. -e 'using Pkg; Pkg.instantiate()'`
+2) Choose data:
+   - **Sample (fast)**: `cp data/flight_data_2024_sample.csv data/flight_data_2024.csv`
+   - **Full**: place the full raw file at `data/flight_data_2024.csv`
+3) Run scripts in order (Phase 1 → 2 → 3) from repo root.
+4) View outputs in `plots/` and re-run as needed after data changes.
 
-1. `scripts/phase1_load_inspect.jl`
-2. `scripts/phase2_clean_engineer.jl`
-3. `scripts/phase3_eda_plots.jl`
+## Dataset
+- Included: `data/flight_data_2024_sample.csv` (small slice) and `data/flight_data_2024_data_dictionary.csv`.
+- Not included (too large for GitHub): `flight_data_2024.csv` and `flight_data_2024_cleaned.csv` (~1–1.5 GB each). If you have the full files, place them in `data/` with those exact names and rerun the pipeline.
 
-Quick health check (small sample, seconds):
-- `scripts/smoke_test.jl`
+## Repository Layout
+- `scripts/phase1_load_inspect.jl` — load and profile the raw CSV
+- `scripts/phase2_clean_engineer.jl` — cleaning + feature engineering, writes cleaned CSV
+- `scripts/phase3_eda_plots.jl` — generates PNG plots into `plots/`
+- `scripts/smoke_test.jl` — tiny end-to-end check using the sample
+- `notebooks/flight_eda_notebook.ipynb` — interactive version of the pipeline
+- `plots/` — saved figures
+- `data/` — sample CSV + data dictionary (add full data here if available)
 
-### Common commands (repo root)
-- `./julia-1.10.5/bin/julia --project=. scripts/phase1_load_inspect.jl`
-- `./julia-1.10.5/bin/julia --project=. scripts/phase2_clean_engineer.jl`
-- `./julia-1.10.5/bin/julia --project=. scripts/phase3_eda_plots.jl`
-- `./julia-1.10.5/bin/julia --project=. scripts/smoke_test.jl`
-
-## Requirements
-- Julia 1.10+
-- Packages:
-  - DataFrames
-  - CSV
-  - Statistics
-  - Dates
-  - Random
-  - Plots
-  - StatsPlots
-  - GR
-
-Install packages using:
-
-```julia
-import Pkg
-Pkg.add(["DataFrames", "CSV", "Statistics", "Dates", "Random", "Plots", "StatsPlots", "GR"])
+## Quick Start (sample data)
+1) Install Julia 1.10+ (portable binary included at `./julia-1.10.5/` if you prefer).
+2) Install dependencies for this project:
+```bash
+./julia-1.10.5/bin/julia --project=. -e 'using Pkg; Pkg.instantiate()'
 ```
-
-## Plotting backend
-- Phase 3 now renders with headless `PyPlot` (Agg). If matplotlib warns about cache directories, set `MPLCONFIGDIR` to a writable folder (the scripts and notebook already set this to a local `.mplconfig`).
+3) Use the sample dataset by copying it to the expected raw name:
+```bash
+cp data/flight_data_2024_sample.csv data/flight_data_2024.csv
+```
+4) Run the pipeline from the repo root:
+```bash
+./julia-1.10.5/bin/julia --project=. scripts/phase1_load_inspect.jl
+./julia-1.10.5/bin/julia --project=. scripts/phase2_clean_engineer.jl
+./julia-1.10.5/bin/julia --project=. scripts/phase3_eda_plots.jl
+```
+For a fast check, use: `./julia-1.10.5/bin/julia --project=. scripts/smoke_test.jl`.
 
 ## Notebooks
+- `notebooks/flight_eda_notebook.ipynb` mirrors the scripted phases and defaults to the sample data for speed. Run `Pkg.instantiate()` once inside, then execute cells in order. Update the file paths in the first code cell if you have the full dataset.
+- `notebooks/test.ipynb` is a short orientation guide (points to the main notebook and data/plots folders).
 
-- `notebooks/flight_eda_notebook.ipynb` mirrors the three scripted phases and defaults to the sample dataset for responsiveness. Activate the project and run `Pkg.instantiate()` inside the notebook once. Toggle `USE_SAMPLE` to load the full cleaned file and `RUN_PHASE3` to regenerate PNGs.
-- `notebooks/test.ipynb` is a short guide pointing to the main notebook and data/plots locations.
+## Plot guide (pair each figure with a takeaway)
+- `1_hist_arrival_delay.png` — arrival delay distribution; report on-time share and tail behavior.
+- `2_flights_by_airline.png` — volume by airline; note which carriers dominate traffic.
+- `3_busiest_airports.png` — top airports by departures/arrivals.
+- `4_cancellation_reasons.png` — mix of cancellation codes.
+- `5_delay_by_hour.png` — average delay vs scheduled hour; identify peak windows.
+- `6_delay_by_airline.png` — mean delays by carrier.
+- `7_boxplot_by_airline.png` — distribution spread per carrier; highlight outliers.
+- `8_scatter_dep_arr.png` — departure vs arrival delay relationship.
+- `9_stacked_delay_reasons.png` — delay composition over time or category.
+- `10_worst_routes.png` — worst-performing routes; great for “actionable” summary.
+- `11_heatmap.png` — correlations between delay types; point out the strongest links.
+- `12_facet_airline_hour.png` — delay by hour faceted by airline; compare patterns.
 
-Plot outputs save directly into `plots/` with stable filenames (e.g., `1_hist_arrival_delay.png`).
+Use the saved plots to craft a short results paragraph in your report. Update with numbers from your full-data run if available.
+
+## Results (what the plots show)
+Saved PNGs in `plots/` include:
+- Distribution of arrival delays and on-time performance
+- Flights by airline and busiest airports
+- Cancellation reasons and delay breakdowns (carrier, weather, NAS, security, late aircraft)
+- Delay patterns by hour of day and by airline
+- Route-level delay severity (worst routes), correlation heatmap, and scatter/facet views
+
+## Limitations & notes
+- Sample data is illustrative; use the full dataset for final numbers.
+- No causal claims—visual EDA only. Join with weather/operational data if you need causal insight.
+- Large raw/cleaned files are excluded from Git; keep them locally or host externally.
+
+## Reproducibility Notes
+- Keep the large CSVs out of Git history; if you add them locally, also keep them in `.gitignore`.
+- All plots are deterministic for the same input file. Re-run scripts or the notebook to regenerate figures after data changes.
