@@ -8,6 +8,12 @@ Exploratory data analysis of 2024 US flight delays using Julia. Designed as a re
 - Dominant delay drivers (e.g., late aircraft vs weather vs NAS) and cancellation patterns.
 - Worst routes and a correlation heatmap to spot co-movement between delay types.
 
+## Research questions (answer these in your submission)
+- When are delays worst? (hour/time-of-day)
+- Which airlines and routes drive the most delays?
+- What causes dominate delays and cancellations?
+- How much worse are the worst routes vs the network average?
+
 ## Methodology & checks
 - Phase 1: load + basic profiling (shape, head/tail, describe).
 - Phase 2: cleaning + features: drop rows missing both dep/arr delay unless cancelled; fill delay reason NAs with 0; fill cancellation codes with `Not_Cancelled`; parse dates; derive `hour_of_day`, `time_of_day`, `is_delayed`, `route`, `is_weekend`.
@@ -81,6 +87,11 @@ For a fast check, use: `./julia-1.10.5/bin/julia --project=. scripts/smoke_test.
 
 Use the saved plots to craft a short results paragraph in your report. Update with numbers from your full-data run if available.
 
+## Quick recommendations (tie to findings)
+- Target peak delay windows (from `5_delay_by_hour.png`/`12_facet_airline_hour.png`) with schedule padding or staffing.
+- Focus on carriers/routes with the worst medians/IQRs (`7_boxplot_by_airline.png`, `10_worst_routes.png`).
+- If late aircraft dominates (`9_stacked_delay_reasons.png`/`11_heatmap.png`), tighten turn times and recovery buffers; if weather/NAS dominates, highlight uncontrollable share.
+
 ## Results (what the plots show)
 Saved PNGs in `plots/` include:
 - Distribution of arrival delays and on-time performance
@@ -97,3 +108,8 @@ Saved PNGs in `plots/` include:
 ## Reproducibility Notes
 - Keep the large CSVs out of Git history; if you add them locally, also keep them in `.gitignore`.
 - All plots are deterministic for the same input file. Re-run scripts or the notebook to regenerate figures after data changes.
+
+## How to present (for grading/report)
+- Lead with the research questions above and answer each with a number or plot reference.
+- Include 1–2 sentences on data quality handling (missingness, type fixes, engineered fields).
+- Add a short paragraph of limitations (sample vs full, descriptive not causal) and the recommendations tied to specific plots.
