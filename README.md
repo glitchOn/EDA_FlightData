@@ -2,11 +2,12 @@
 
 Exploratory data analysis of 2024 US flight delays using Julia. Designed as a reproducible, scripted pipeline with an interactive notebook companion. The repo now includes both the **small sample** and the **full raw/cleaned datasets** via Git LFS.
 
-## Executive summary (fill in from your run)
-- On-time vs delayed share and typical delay range.
-- When delays are worst (hour-of-day, time-of-day buckets) and which airlines/routes are most impacted.
-- Dominant delay drivers (e.g., late aircraft vs weather vs NAS) and cancellation patterns.
-- Worst routes and a correlation heatmap to spot co-movement between delay types.
+## Executive summary (sample run)
+- On-time share: ~78% on the sample (arrival delay ≤ 15 mins); median arrival delay ≈ -6 mins, 95th percentile ≈ 88 mins.
+- Peak delay window: around 4 AM scheduled departures showed the highest average arrival delay (~43 mins) in the sample; verify on full data.
+- Worst performers (sample averages): airline AA had the highest mean arrival delay (~16 mins); top routes by average delay were SDF→MIA, SFO→MRY, DSM→SNA (sample artifacts—confirm on full dataset).
+- Dominant causes: late aircraft > carrier > weather/NAS/security (by summed delay minutes).
+- Cancellations: ~1.2% cancelled in the sample; most had no cancellation code (Not_Cancelled), with code B next.
 
 ## Research questions (answer these in your submission)
 - When are delays worst? (hour/time-of-day)
@@ -19,6 +20,12 @@ Exploratory data analysis of 2024 US flight delays using Julia. Designed as a re
 - Phase 2: cleaning + features: drop rows missing both dep/arr delay unless cancelled; fill delay reason NAs with 0; fill cancellation codes with `Not_Cancelled`; parse dates; derive `hour_of_day`, `time_of_day`, `is_delayed`, `route`, `is_weekend`.
 - Phase 3: plot generation (PNG to `plots/`), using headless PyPlot for reliability.
 - Data dictionary: `data/flight_data_2024_data_dictionary.csv` holds column definitions—reference it when interpreting plots.
+
+## Script walkthrough (what each phase does)
+- `scripts/phase1_load_inspect.jl`: loads `data/flight_data_2024.csv`, prints shape, head/tail, and `describe()` for a quick quality scan.
+- `scripts/phase2_clean_engineer.jl`: cleans the raw file, drops rows missing both dep/arr delay (unless cancelled), fills delay-reason NAs with 0, fills cancellation code with `Not_Cancelled`, parses dates, derives `hour_of_day`, `time_of_day`, `is_delayed`, `route`, `is_weekend`, then writes `data/flight_data_2024_cleaned.csv`.
+- `scripts/phase3_eda_plots.jl`: reads the cleaned file and generates all PNGs into `plots/` (histograms, busiest airports, delay by hour/airline, worst routes, heatmap, facets).
+- `scripts/smoke_test.jl`: miniature end-to-end run on the sample to sanity check the pipeline.
 
 ## Highlights
 - Three-phase pipeline: load/inspect → clean/engineer → plot/interpret
@@ -109,7 +116,14 @@ Saved PNGs in `plots/` include:
 - Keep the large CSVs out of Git history; if you add them locally, also keep them in `.gitignore`.
 - All plots are deterministic for the same input file. Re-run scripts or the notebook to regenerate figures after data changes.
 
-## How to present (for grading/report)
-- Lead with the research questions above and answer each with a number or plot reference.
-- Include 1–2 sentences on data quality handling (missingness, type fixes, engineered fields).
-- Add a short paragraph of limitations (sample vs full, descriptive not causal) and the recommendations tied to specific plots.
+## Using this for your submission
+- Answer the research questions above with numbers and plot references.
+- Briefly note data quality handling (missingness, type fixes, engineered fields).
+- Close with limitations (sample vs full, descriptive not causal) and the recommendations tied to specific plots.
+
+## Full-dataset summary (replace with your full run)
+- On-time % and median/95th arrival delay: _[…from full data…]_
+- Peak delay window (hour/time-of-day) and airline most affected: _[…from full data…]_
+- Top 3 worst routes (with average delay or % delayed): _[…from full data…]_
+- Dominant delay causes and cancellation mix: _[…from full data…]_
+- Most impactful recommendation (tie it to a specific plot): _[…from full data…]_
