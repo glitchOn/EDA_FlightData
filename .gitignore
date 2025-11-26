@@ -3,5 +3,3 @@
 .vscode/
 julia-1.10.5/
 julia-1.10.5-macaarch64.tar.gz
-data/flight_data_2024.csv
-data/flight_data_2024_cleaned.csv
