@@ -1,6 +1,6 @@
 # Flight Delay EDA (Julia)
 
-Exploratory data analysis of 2024 US flight delays using Julia. Designed as a reproducible, scripted pipeline with an interactive notebook companion. This version ships with a **small sample** of the data for quick grading/runs; the full raw/cleaned datasets (>1 GB) are intentionally excluded from Git history.
+Exploratory data analysis of 2024 US flight delays using Julia. Designed as a reproducible, scripted pipeline with an interactive notebook companion. The repo now includes both the **small sample** and the **full raw/cleaned datasets** via Git LFS.
 
 ## Executive summary (fill in from your run)
 - On-time vs delayed share and typical delay range.
@@ -22,16 +22,17 @@ Exploratory data analysis of 2024 US flight delays using Julia. Designed as a re
 - Data dictionary for column definitions
 
 ## Reproducibility checklist
-1) `./julia-1.10.5/bin/julia --project=. -e 'using Pkg; Pkg.instantiate()'`
-2) Choose data:
+1) `git lfs install` (once, so the large CSVs download correctly)
+2) `./julia-1.10.5/bin/julia --project=. -e 'using Pkg; Pkg.instantiate()'`
+3) Choose data:
    - **Sample (fast)**: `cp data/flight_data_2024_sample.csv data/flight_data_2024.csv`
-   - **Full**: place the full raw file at `data/flight_data_2024.csv`
-3) Run scripts in order (Phase 1 → 2 → 3) from repo root.
-4) View outputs in `plots/` and re-run as needed after data changes.
+   - **Full**: use the LFS-fetched `data/flight_data_2024.csv` (already present after clone)
+4) Run scripts in order (Phase 1 → 2 → 3) from repo root.
+5) View outputs in `plots/` and re-run as needed after data changes.
 
 ## Dataset
-- Included: `data/flight_data_2024_sample.csv` (small slice) and `data/flight_data_2024_data_dictionary.csv`.
-- Not included (too large for GitHub): `flight_data_2024.csv` and `flight_data_2024_cleaned.csv` (~1–1.5 GB each). If you have the full files, place them in `data/` with those exact names and rerun the pipeline.
+- Included: `data/flight_data_2024_sample.csv` (small slice), `data/flight_data_2024_data_dictionary.csv`, **and full files** `flight_data_2024.csv` and `flight_data_2024_cleaned.csv` stored via Git LFS.
+- After cloning, run `git lfs install && git lfs pull` if needed to fetch the large files.
 
 ## Repository Layout
 - `scripts/phase1_load_inspect.jl` — load and profile the raw CSV
