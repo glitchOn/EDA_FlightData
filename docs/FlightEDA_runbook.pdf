@@ -1,0 +1,14 @@
+FlightEDA Runbook (see README for full steps)
+=============================================
+
+- Instantiate once:
+  JULIA_DEPOT_PATH=./.julia_depot ./julia-1.10.5/bin/julia --project=. -e 'using Pkg; Pkg.instantiate()'
+- Run all phases (sample config):
+  JULIA_DEPOT_PATH=./.julia_depot ./julia-1.10.5/bin/julia --project=. bin/flight_eda.jl --phase all --config config/eda_config_sample.toml
+- Single phase (1/2/3/smoke):
+  JULIA_DEPOT_PATH=./.julia_depot ./julia-1.10.5/bin/julia --project=. bin/flight_eda.jl --phase 2 --config config/eda_config.toml
+- Smoke test shortcut:
+  JULIA_DEPOT_PATH=./.julia_depot ./julia-1.10.5/bin/julia --project=. test/smoke_test.jl
+- Run tests:
+  JULIA_DEPOT_PATH=./.julia_depot ./julia-1.10.5/bin/julia --project=. -e 'using Pkg; Pkg.test()'
+- Config override: set EDA_CONFIG to a custom TOML path.
