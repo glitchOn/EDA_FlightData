@@ -39,7 +39,7 @@ end
         FlightEDA.PlotConfig(joinpath(@__DIR__, "fixtures", "plots"), 1000, 1, -60.0, 180.0),
         Logging.Info,
     )
-    df_clean = FlightEDA.clean_and_engineer(cfg)
+    df_clean = FlightEDA.clean_and_engineer_data(cfg)
     @test nrow(df_clean) == 3  # cancelled row stays
     @test all(!ismissing.(df_clean.carrier_delay))
     @test all(df_clean.cancellation_code .!= missing)
@@ -56,7 +56,7 @@ end
         FlightEDA.PlotConfig(plot_dir, 1000, 1, -60.0, 180.0),
         Logging.Info,
     )
-    FlightEDA.clean_and_engineer(cfg)
+    FlightEDA.clean_and_engineer_data(cfg)
     FlightEDA.generate_plots(cfg)
     files = readdir(plot_dir)
     @test length(files) >= 10

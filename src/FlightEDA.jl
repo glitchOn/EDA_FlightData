@@ -20,7 +20,10 @@ include("FlightEDA/CLI.jl")
 export DEFAULT_CONFIG_PATH,
        Config, DataConfig, PlotConfig,
         load_config,
-        run_phase1, run_phase2, run_phase3, run_smoke, run_phase,
+        load_raw_dataset, clean_and_engineer_data,
+        run_load_phase, run_clean_phase, run_phase3, run_smoke, run_phase,
+        # compatibility exports
+        load_raw, clean_and_engineer, run_phase1, run_phase2,
         parse_cli_args, print_help, main,
         REQUIRED_COLUMNS,
         get_hour, assign_time_of_day,

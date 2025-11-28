@@ -7,6 +7,8 @@ else
     floor(Int, hhmm / 100) % 24
 end
 
+hascol(df::DataFrame, col::Symbol) = col in propertynames(df)
+
 assign_time_of_day(hour) = if 6 <= hour < 11
     "Morning"
 elseif 11 <= hour < 16
@@ -18,21 +20,35 @@ else
 end
 
 function ensure_date_column!(df::DataFrame)
-    if :fl_date in names(df) && eltype(df.fl_date) <: AbstractString
+    if hascol(df, :fl_date) && eltype(df.fl_date) <: AbstractString
         df.fl_date = Date.(df.fl_date, "yyyy-mm-dd")
     end
     return df
 end
 
 function ensure_hour_features!(df::DataFrame)
-    if !(:hour_of_day in names(df))
-        if :crs_dep_time in names(df)
+    hour_missing = !hascol(df, :hour_of_day)
+    hour_constant = false
+    if !hour_missing
+        uniq_hours = unique(skipmissing(df.hour_of_day))
+        hour_constant = length(uniq_hours) <= 1
+    end
+
+    needs_recompute = hour_missing || hour_constant
+    if needs_recompute && hascol(df, :crs_dep_time)
+        uniq_crs = unique(skipmissing(df.crs_dep_time))
+        needs_recompute = needs_recompute && length(uniq_crs) > 1
+    end
+
+    if needs_recompute
+        if hascol(df, :crs_dep_time)
             df.hour_of_day = get_hour.(coalesce.(df.crs_dep_time, 0))
         else
             df.hour_of_day = fill(0, nrow(df))
         end
     end
-    if :hour_of_day in names(df) && !(:time_of_day in names(df))
+
+    if hascol(df, :hour_of_day) && !hascol(df, :time_of_day)
         df.time_of_day = assign_time_of_day.(df.hour_of_day)
     end
 end
@@ -45,10 +61,10 @@ end
 
 function enrich_features!(df::DataFrame)
     ensure_hour_features!(df)
-    if :arr_delay in names(df) && !(:is_delayed in names(df))
+    if hascol(df, :arr_delay) && !hascol(df, :is_delayed)
         df.is_delayed = coalesce.(df.arr_delay .>= 15, false)
     end
-    if (:origin in names(df)) && (:dest in names(df)) && !(:route in names(df))
+    if hascol(df, :origin) && hascol(df, :dest) && !hascol(df, :route)
         df.route = string.(df.origin, " → ", df.dest)
     end
     return df

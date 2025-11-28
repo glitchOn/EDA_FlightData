@@ -1,7 +1,7 @@
 [data]
-raw_file = "data/flight_data_2024_sample.csv"
-cleaned_file = "data/flight_data_2024_cleaned_sample_run.csv"
-sample_file = "data/flight_data_2024_sample.csv"
+raw_file = "data/sample/flight_data_2024_sample.csv"
+cleaned_file = "data/sample/flight_data_2024_cleaned_sample_run.csv"
+sample_file = "data/sample/flight_data_2024_sample.csv"
 
 [plots]
 dir = "plots/sample"
